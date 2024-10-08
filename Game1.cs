@@ -20,6 +20,9 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
         KeyboardState keyboardState;
         KeyboardState prevKeyboardState;
 
+        SpriteFont titleFont;
+        SpriteFont instructionFont;
+
         Texture2D backgroundTexture;
         Texture2D canvasTexture;
 
@@ -30,7 +33,13 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
         List<Texture2D> splatTextures;
         List<Rectangle> splatRects;
 
+        enum ScreenState
+        {
+            Title,
+            Paint
+        }
 
+        ScreenState screenState;
 
         public Game1()
         {
@@ -51,6 +60,8 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
             splatTextures = new List<Texture2D>();
             splatRects = new List<Rectangle>();
 
+            screenState = ScreenState.Title;
+
             base.Initialize();
         }
 
@@ -58,7 +69,17 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            backgroundTexture = Content.Load<Texture2D>("Images/RoomBackground");
+            canvasTexture = Content.Load<Texture2D>("Images/Canvas");
+
+            titleFont = Content.Load<SpriteFont>("Fonts/Title");
+            instructionFont = Content.Load<SpriteFont>("Fonts/Instruction");
+
+            textures.Add(Content.Load<Texture2D>("Images/RedSplat"));
+            textures.Add(Content.Load<Texture2D>("Images/OrangeSplat"));
+            textures.Add(Content.Load<Texture2D>("Images/GreenSplat"));
+            textures.Add(Content.Load<Texture2D>("Images/BlueSplat"));
+            textures.Add(Content.Load<Texture2D>("Images/PurpleSplat"));
         }
 
         protected override void Update(GameTime gameTime)
@@ -66,17 +87,44 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            mouseState = Mouse.GetState();
+            keyboardState = Keyboard.GetState();
 
+            if (screenState == ScreenState.Title)
+            {
+                if (keyboardState.IsKeyDown(Keys.Enter) && prevKeyboardState.IsKeyUp(Keys.Enter))
+                {
+                    screenState = ScreenState.Paint;
+                }
+            }
+
+
+
+
+            prevMouseState = mouseState;
+            prevKeyboardState = keyboardState;
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(backgroundTexture, backgroundRect, Color.White);
 
-            // TODO: Add your drawing code here
+            if (screenState == ScreenState.Title)
+            {
+                _spriteBatch.DrawString(titleFont, "Jackson Pollok Simulator!", new Vector2(140, 100), Color.Black);
+                _spriteBatch.DrawString(instructionFont, "By Christian Moyes", new Vector2(335, 175), Color.Black);
+                _spriteBatch.DrawString(titleFont, "Press ENTER to continue:", new Vector2(135, 300), Color.Black);
+            }
+            else if (screenState == ScreenState.Paint)
+            {
+                _spriteBatch.Draw(canvasTexture, canvasRect, Color.White);
+            }
 
+
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }
