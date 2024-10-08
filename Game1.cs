@@ -70,7 +70,7 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             backgroundTexture = Content.Load<Texture2D>("Images/RoomBackground");
-            canvasTexture = Content.Load<Texture2D>("Images/Canvas");
+
 
             titleFont = Content.Load<SpriteFont>("Fonts/Title");
             instructionFont = Content.Load<SpriteFont>("Fonts/Instruction");
