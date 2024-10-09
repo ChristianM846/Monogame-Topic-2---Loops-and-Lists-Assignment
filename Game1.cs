@@ -125,9 +125,6 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
                 }
             }
 
-
-
-
             prevMouseState = mouseState;
             prevKeyboardState = keyboardState;
             base.Update(gameTime);
