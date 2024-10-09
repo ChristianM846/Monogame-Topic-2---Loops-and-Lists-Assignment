@@ -54,7 +54,7 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
         protected override void Initialize()
         {
             backgroundRect = new Rectangle(0, 0, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
-            canvasRect = new Rectangle(150, 100, 200, 400);
+            canvasRect = new Rectangle(200, 50, 400, 450);
 
             textures = new List<Texture2D>();
             splatTextures = new List<Texture2D>();
@@ -70,7 +70,7 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             backgroundTexture = Content.Load<Texture2D>("Images/RoomBackground");
-
+            canvasTexture = Content.Load<Texture2D>("Images/CanvasSprite");
 
             titleFont = Content.Load<SpriteFont>("Fonts/Title");
             instructionFont = Content.Load<SpriteFont>("Fonts/Instruction");
@@ -97,6 +97,33 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
                     screenState = ScreenState.Paint;
                 }
             }
+            else if (screenState == ScreenState.Paint)
+            {
+                if (keyboardState.IsKeyDown(Keys.Space) && prevKeyboardState.IsKeyUp(Keys.Space))
+                {
+                    splatTextures.Add(textures[generator.Next(textures.Count)]);
+                    splatRects.Add(new Rectangle(generator.Next(210, 541), generator.Next(75, 361), 50, 50));
+                }
+
+                if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
+                {
+                    for (int i = 0; i < splatRects.Count; i++)
+                    {
+                        if (splatRects[i].Contains(mouseState.Position))
+                        {
+                            splatRects.RemoveAt(i);
+                            splatTextures.RemoveAt(i);
+                            i--;                          
+                        }
+                    }
+                }
+
+                if (mouseState.RightButton == ButtonState.Pressed && prevMouseState.RightButton == ButtonState.Released)
+                {
+                    splatRects.Clear();
+                    splatTextures.Clear();
+                }
+            }
 
 
 
@@ -115,12 +142,22 @@ namespace Monogame_Topic_2___Loops_and_Lists_Assignment
             if (screenState == ScreenState.Title)
             {
                 _spriteBatch.DrawString(titleFont, "Jackson Pollok Simulator!", new Vector2(140, 100), Color.Black);
-                _spriteBatch.DrawString(instructionFont, "By Christian Moyes", new Vector2(335, 175), Color.Black);
+                _spriteBatch.DrawString(instructionFont, "By Christian Moyes", new Vector2(280, 175), Color.Black);
                 _spriteBatch.DrawString(titleFont, "Press ENTER to continue:", new Vector2(135, 300), Color.Black);
             }
             else if (screenState == ScreenState.Paint)
             {
                 _spriteBatch.Draw(canvasTexture, canvasRect, Color.White);
+                _spriteBatch.DrawString(instructionFont, "Press space to paint the canvas:", new Vector2(180, 10), Color.Yellow);
+                _spriteBatch.DrawString(instructionFont, "Left click a splat to remove it.", new Vector2(205, 415), Color.Yellow);
+                _spriteBatch.DrawString(instructionFont, "Right clcik to clear the canvas.", new Vector2(195, 450), Color.Yellow);
+                _spriteBatch.DrawString(instructionFont, $"Splats: {splatRects.Count}", new Vector2(630, 200), Color.Black);
+
+                for (int i = 0; i < splatRects.Count; i++)
+                {
+                    _spriteBatch.Draw(splatTextures[i], splatRects[i], Color.White);
+                }
+
             }
 
 
